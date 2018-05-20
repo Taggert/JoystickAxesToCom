@@ -1,36 +1,33 @@
 package taggert;
 
+import lombok.SneakyThrows;
 import net.java.games.input.Component;
 import net.java.games.input.Component.Identifier;
 import net.java.games.input.Controller;
 import net.java.games.input.ControllerEnvironment;
 
 import java.util.ArrayList;
-import java.util.Scanner;
 
 /**
- *
  * JInput Joystick
  *
- *
  * @author TheUzo007
- *         http://theuzo007.wordpress.com
- *
- *
+ * http://theuzo007.wordpress.com
+ * <p>
+ * <p>
  * To use this you need JInput libraries and its files. http://java.net/projects/jinput
- *
+ * <p>
  * This class is intended for use with joysticks of stick or gamepad type (JInput type),
  * like Logitech Dual Action which is a stick type or Xbox MadCatz which is a gamepad type.
  * It can be used with other types to, but each controller has different components, therefore,
  * some methods that I wrote are not useful with other types of controller. But
  * you can always use getComponentValue method and specify controller component
  * identifier that you need or add your own methods.
- *
+ * <p>
  * JInput javadoc: http://www.newdawnsoftware.com/resources/jinput/apidocs
- *
- *
+ * <p>
+ * <p>
  * More on the blog: http://theuzo007.wordpress.com/2012/09/02/joystick-in-java-with-jinput
- *
  */
 
 public class JInputJoystick {
@@ -41,15 +38,12 @@ public class JInputJoystick {
     private ArrayList<Boolean> buttonsValues;
 
 
-
-
     /**
      * Creates a controller, of type that has been given.
      *
      * @param controllerType Desired controller type.
      */
-    public JInputJoystick(Controller.Type controllerType)
-    {
+    public JInputJoystick(Controller.Type controllerType) {
         initialize();
         initController(controllerType, null);
     }
@@ -61,30 +55,26 @@ public class JInputJoystick {
      * @param controllerType_1 Desired controller type.
      * @param controllerType_2 Desired controller type.
      */
-    public JInputJoystick(Controller.Type controllerType_1, Controller.Type controllerType_2)
-    {
+    public JInputJoystick(Controller.Type controllerType_1, Controller.Type controllerType_2) {
         initialize();
         initController(controllerType_1, controllerType_2);
     }
 
-    private void initialize()
-    {
+    private void initialize() {
         this.controller = null;
         this.buttonsValues = new ArrayList<Boolean>();
     }
 
     /**
      * Save first founded controller of given type.
-     *
-     *
      */
-    private void initController(Controller.Type controllerType_1, Controller.Type controllerType_2)
-    {
+    @SneakyThrows
+    private void initController(Controller.Type controllerType_1, Controller.Type controllerType_2) {
         Controller[] controllers = ControllerEnvironment.getDefaultEnvironment().getControllers();
         ArrayList<Controller> controllerList = new ArrayList<>();
-        for(int i=0; i < controllers.length && controller == null; i++) {
-            if(controllers[i].getType() == controllerType_1 ||
-               controllers[i].getType() == controllerType_2){
+        for (int i = 0; i < controllers.length && controller == null; i++) {
+            if (controllers[i].getType() == controllerType_1 ||
+                    controllers[i].getType() == controllerType_2) {
                 controllerList.add(controllers[i]);
             }
         }
@@ -92,26 +82,21 @@ public class JInputJoystick {
         String s = "";
         while (check) {
             check = false;
-            System.out.println("Choose controller from list and input it's number:");
-            controllerList.forEach(x -> System.out.println((controllerList.indexOf(x)+1)+". "+x.getName()));
-            Scanner scanner = new Scanner(System.in);
-            s = scanner.nextLine();
+            App.controller.print("Choose controller from list and input it's number:");
+
+            controllerList.forEach(x -> App.controller.print((controllerList.indexOf(x) + 1) + ". " + x.getName()));
+            s = App.controller.getInput();
+            if(s == null) return;
             if (Integer.parseInt(s) > controllerList.size() || Integer.parseInt(s) <= 0) {
-                System.out.println("Wrong number");
+                App.controller.print("Wrong number");
                 check = true;
             }
         }
-        System.out.println("You chose controller: " + controllerList.get(Integer.parseInt(s) - 1));
-
+        App.controller.print("You chose controller: " + controllerList.get(Integer.parseInt(s) - 1));
 
 
         controller = controllerList.get(Integer.parseInt(s) - 1);
     }
-
-
-
-
-
 
 
     /**
@@ -120,12 +105,10 @@ public class JInputJoystick {
      * of the buttons into buttons array list that is used by getButtonsValues()
      * and getButtonValue(int index) methods.
      *
-     * @see joystick.JInputJoystick#pollController()
-     *
      * @return True if controller is connected, false otherwise.
+     * @see joystick.JInputJoystick#pollController()
      */
-    public boolean isControllerConnected()
-    {
+    public boolean isControllerConnected() {
         try {
             return controller.poll();
         } catch (Exception e) {
@@ -140,8 +123,7 @@ public class JInputJoystick {
      *
      * @return Type of the controller.
      */
-    public Controller.Type getControllerType()
-    {
+    public Controller.Type getControllerType() {
         return controller.getType();
     }
 
@@ -152,8 +134,7 @@ public class JInputJoystick {
      *
      * @return Controller name.
      */
-    public String getControllerName()
-    {
+    public String getControllerName() {
         return controller.getName();
     }
 
@@ -165,8 +146,7 @@ public class JInputJoystick {
      *
      * @return True if controller is connected/valid, false otherwise.
      */
-    public boolean pollController()
-    {
+    public boolean pollController() {
         boolean isControllerValid;
 
         // Clear previous values of buttons.
@@ -177,17 +157,17 @@ public class JInputJoystick {
         } catch (Exception e) {
             return false;
         }
-        if(!isControllerValid)
+        if (!isControllerValid)
             return false;
 
         Component[] components = controller.getComponents();
 
-        for(int i=0; i < components.length; i++) {
+        for (int i = 0; i < components.length; i++) {
             Component component = components[i];
 
             // Add states of the buttons
-            if(component.getName().contains("Button"))
-                if(component.getPollData() == 1.0f)
+            if (component.getName().contains("Button"))
+                if (component.getPollData() == 1.0f)
                     buttonsValues.add(Boolean.TRUE);
                 else
                     buttonsValues.add(Boolean.FALSE);
@@ -203,11 +183,10 @@ public class JInputJoystick {
      * @param identifier Identifier that correspond to component.
      * @return True if component exists or false if not exists.
      */
-    public boolean componentExists(Identifier identifier)
-    {
+    public boolean componentExists(Identifier identifier) {
         Component component = controller.getComponent(identifier);
 
-        if(component != null)
+        if (component != null)
             return true;
         else
             return false;
@@ -220,7 +199,7 @@ public class JInputJoystick {
      * @param identifier Identifier that correspond to component from which we need value.
      * @return Component value.
      */
-    public float getComponentValue(Identifier identifier){
+    public float getComponentValue(Identifier identifier) {
         return controller.getComponent(identifier).getPollData();
     }
 
@@ -230,8 +209,7 @@ public class JInputJoystick {
      *
      * @return Number of buttons on a controller.
      */
-    public int getNumberOfButtons()
-    {
+    public int getNumberOfButtons() {
         return buttonsValues.size();
     }
 
@@ -243,8 +221,7 @@ public class JInputJoystick {
      *
      * @return Array list of states of all controller buttons.
      */
-    public ArrayList<Boolean> getButtonsValues()
-    {
+    public ArrayList<Boolean> getButtonsValues() {
         return buttonsValues;
     }
 
@@ -254,9 +231,8 @@ public class JInputJoystick {
      * @param index Index of a button in array list.
      * @return True if button is pressed, false otherwise.
      */
-    public boolean getButtonValue(int index)
-    {
-         return buttonsValues.get(index);
+    public boolean getButtonValue(int index) {
+        return buttonsValues.get(index);
     }
 
 
@@ -265,8 +241,7 @@ public class JInputJoystick {
      *
      * @return X Axis value.
      */
-    public float getXAxisValue()
-    {
+    public float getXAxisValue() {
         Identifier identifier = Component.Identifier.Axis.X;
         return controller.getComponent(identifier).getPollData();
     }
@@ -279,10 +254,9 @@ public class JInputJoystick {
      *
      * @return X Axis value in percentage.
      */
-    public int getXAxisPercentage()
-    {
+    public int getXAxisPercentage() {
         float xAxisValue = this.getXAxisValue();
-        int xAxisValuePercentage = (int)((2 - (1 - xAxisValue)) * 100) / 2;
+        int xAxisValuePercentage = (int) ((2 - (1 - xAxisValue)) * 100) / 2;
 
         return xAxisValuePercentage;
     }
@@ -293,8 +267,7 @@ public class JInputJoystick {
      *
      * @return Y Axis value.
      */
-    public float getYAxisValue()
-    {
+    public float getYAxisValue() {
         Identifier identifier = Component.Identifier.Axis.Y;
         return controller.getComponent(identifier).getPollData();
     }
@@ -307,10 +280,9 @@ public class JInputJoystick {
      *
      * @return Y Axis value in percentage.
      */
-    public int getYAxisPercentage()
-    {
+    public int getYAxisPercentage() {
         float yAxisValue = this.getYAxisValue();
-        int yAxisValuePercentage = (int)((2 - (1 - yAxisValue)) * 100) / 2;
+        int yAxisValuePercentage = (int) ((2 - (1 - yAxisValue)) * 100) / 2;
 
         return yAxisValuePercentage;
     }
@@ -321,8 +293,7 @@ public class JInputJoystick {
      *
      * @return Z Rotation value.
      */
-    public float getZRotationValue()
-    {
+    public float getZRotationValue() {
         Identifier identifier = Component.Identifier.Axis.RZ;
         return controller.getComponent(identifier).getPollData();
     }
@@ -335,10 +306,9 @@ public class JInputJoystick {
      *
      * @return Z Rotation value in percentage.
      */
-    public int getZRotationPercentage()
-    {
+    public int getZRotationPercentage() {
         float zRotation = this.getZRotationValue();
-        int zRotationValuePercentage = (int)((2 - (1 - zRotation)) * 100) / 2;
+        int zRotationValuePercentage = (int) ((2 - (1 - zRotation)) * 100) / 2;
 
         return zRotationValuePercentage;
     }
@@ -349,8 +319,7 @@ public class JInputJoystick {
      *
      * @return Z Axis value.
      */
-    public float getZAxisValue()
-    {
+    public float getZAxisValue() {
         Identifier identifier = Component.Identifier.Axis.Z;
         return controller.getComponent(identifier).getPollData();
     }
@@ -363,10 +332,9 @@ public class JInputJoystick {
      *
      * @return Z Axis value in percentage.
      */
-    public int getZAxisPercentage()
-    {
+    public int getZAxisPercentage() {
         float zAxisValue = this.getZAxisValue();
-        int zAxisValuePercentage = (int)((2 - (1 - zAxisValue)) * 100) / 2;
+        int zAxisValuePercentage = (int) ((2 - (1 - zAxisValue)) * 100) / 2;
 
         return zAxisValuePercentage;
     }
@@ -377,8 +345,7 @@ public class JInputJoystick {
      *
      * @return X Rotation value.
      */
-    public float getXRotationValue()
-    {
+    public float getXRotationValue() {
         Identifier identifier = Component.Identifier.Axis.RX;
         return controller.getComponent(identifier).getPollData();
     }
@@ -391,10 +358,9 @@ public class JInputJoystick {
      *
      * @return X Rotation value in percentage.
      */
-    public int getXRotationPercentage()
-    {
+    public int getXRotationPercentage() {
         float xRotationValue = this.getXRotationValue();
-        int xRotationValuePercentage = (int)((2 - (1 - xRotationValue)) * 100) / 2;
+        int xRotationValuePercentage = (int) ((2 - (1 - xRotationValue)) * 100) / 2;
 
         return xRotationValuePercentage;
     }
@@ -405,8 +371,7 @@ public class JInputJoystick {
      *
      * @return Y Rotation value.
      */
-    public float getYRotationValue()
-    {
+    public float getYRotationValue() {
         Identifier identifier = Component.Identifier.Axis.RY;
         return controller.getComponent(identifier).getPollData();
     }
@@ -419,10 +384,9 @@ public class JInputJoystick {
      *
      * @return Y Rotation value in percentage.
      */
-    public int getYRotationPercentage()
-    {
+    public int getYRotationPercentage() {
         float yRotationValue = this.getYRotationValue();
-        int yRotationValuePercentage = (int)((2 - (1 - yRotationValue)) * 100) / 2;
+        int yRotationValuePercentage = (int) ((2 - (1 - yRotationValue)) * 100) / 2;
 
         return yRotationValuePercentage;
     }
@@ -435,8 +399,7 @@ public class JInputJoystick {
      *
      * @return Float number that corresponds with the Hat Switch position.
      */
-    public float getHatSwitchPosition()
-    {
+    public float getHatSwitchPosition() {
         Identifier identifier = Component.Identifier.Axis.POV;
         return controller.getComponent(identifier).getPollData();
     }
@@ -450,58 +413,50 @@ public class JInputJoystick {
 
     /**
      * X position of left controller joystick.
-     *
+     * <p>
      * The same as method getXAxisValue().
      *
-     * @see joystick.JInputJoystick#getXAxisValue()
-     *
      * @return Float value (from -1.0f to 1.0f) corresponding to left controller joystick on x coordinate.
+     * @see joystick.JInputJoystick#getXAxisValue()
      */
-    public float getX_LeftJoystick_Value()
-    {
+    public float getX_LeftJoystick_Value() {
         return this.getXAxisValue();
     }
 
     /**
      * X position, in percentages, of left controller joystick.
-     *
+     * <p>
      * The same as method getXAxisPercentage().
      *
-     * @see joystick.JInputJoystick#getXAxisPercentage()
-     *
      * @return Int value (from 0 to 100) corresponding to left controller joystick on x coordinate.
+     * @see joystick.JInputJoystick#getXAxisPercentage()
      */
-    public int getX_LeftJoystick_Percentage()
-    {
+    public int getX_LeftJoystick_Percentage() {
         return this.getXAxisPercentage();
     }
 
 
     /**
      * Y position of left controller joystick.
-     *
+     * <p>
      * The same as method getYAxisValue().
      *
-     * @see joystick.JInputJoystick#getYAxisValue()
-     *
      * @return Float value (from -1.0f to 1.0f) corresponding to left controller joystick on y coordinate.
+     * @see joystick.JInputJoystick#getYAxisValue()
      */
-    public float getY_LeftJoystick_Value()
-    {
+    public float getY_LeftJoystick_Value() {
         return this.getYAxisValue();
     }
 
     /**
      * Y position, in percentages, of left controller joystick.
-     *
+     * <p>
      * The same as method getYAxisPercentage().
      *
-     * @see joystick.JInputJoystick#getYAxisPercentage()
-     *
      * @return Int value (from 0 to 100) corresponding to left controller joystick on y coordinate.
+     * @see joystick.JInputJoystick#getYAxisPercentage()
      */
-    public int getY_LeftJoystick_Percentage()
-    {
+    public int getY_LeftJoystick_Percentage() {
         return this.getYAxisPercentage();
     }
 
@@ -510,27 +465,23 @@ public class JInputJoystick {
 
     /**
      * X position of right controller joystick.
-     *
+     * <p>
      * The same as method getZAxisValue() if controller type is Controller.Type.STICK.
      * The same as method getXRotationValue() if controller type is Controller.Type.GAMEPAD.
      *
+     * @return Float value (from -1.0f to 1.0f) corresponding to right controller joystick on x coordinate.
      * @see joystick.JInputJoystick#getZAxisValue()
      * @see joystick.JInputJoystick#getXRotationValue()
-     *
-     * @return Float value (from -1.0f to 1.0f) corresponding to right controller joystick on x coordinate.
      */
-    public float getX_RightJoystick_Value()
-    {
+    public float getX_RightJoystick_Value() {
         float xValueRightJoystick;
 
         // stick type controller
-        if(this.controller.getType() == Controller.Type.STICK)
-        {
+        if (this.controller.getType() == Controller.Type.STICK) {
             xValueRightJoystick = this.getZAxisValue();
         }
         // gamepad type controller
-        else
-        {
+        else {
             xValueRightJoystick = this.getXRotationValue();
         }
 
@@ -539,27 +490,23 @@ public class JInputJoystick {
 
     /**
      * X position, in percentages, of right controller joystick.
-     *
+     * <p>
      * The same as method getZAxisPercentage() if controller type is Controller.Type.STICK.
      * The same as method getXRotationPercentage() if controller type is Controller.Type.GAMEPAD.
      *
+     * @return Int value (from 0 to 100) corresponding to right controller joystick on x coordinate.
      * @see joystick.JInputJoystick#getZAxisPercentage()
      * @see joystick.JInputJoystick#getXRotationPercentage()
-     *
-     * @return Int value (from 0 to 100) corresponding to right controller joystick on x coordinate.
      */
-    public int getX_RightJoystick_Percentage()
-    {
+    public int getX_RightJoystick_Percentage() {
         int xValueRightJoystickPercentage;
 
         // stick type controller
-        if(this.controller.getType() == Controller.Type.STICK)
-        {
+        if (this.controller.getType() == Controller.Type.STICK) {
             xValueRightJoystickPercentage = this.getZAxisPercentage();
         }
         // gamepad type controller
-        else
-        {
+        else {
             xValueRightJoystickPercentage = this.getXRotationPercentage();
         }
 
@@ -569,27 +516,23 @@ public class JInputJoystick {
 
     /**
      * Y position of right controller joystick.
-     *
+     * <p>
      * The same as method getZRotationValue() if controller type is Controller.Type.STICK.
      * The same as method getYRotationValue() if controller type is Controller.Type.GAMEPAD.
      *
+     * @return Float value (from -1.0f to 1.0f) corresponding to right controller joystick on y coordinate.
      * @see joystick.JInputJoystick#getZRotationValue()
      * @see joystick.JInputJoystick#getYRotationValue()
-     *
-     * @return Float value (from -1.0f to 1.0f) corresponding to right controller joystick on y coordinate.
      */
-    public float getY_RightJoystick_Value()
-    {
+    public float getY_RightJoystick_Value() {
         float yValueRightJoystick;
 
         // stick type controller
-        if(this.controller.getType() == Controller.Type.STICK)
-        {
+        if (this.controller.getType() == Controller.Type.STICK) {
             yValueRightJoystick = this.getZRotationValue();
         }
         // gamepad type controller
-        else
-        {
+        else {
             yValueRightJoystick = this.getYRotationValue();
         }
 
@@ -598,27 +541,23 @@ public class JInputJoystick {
 
     /**
      * Y position, in percentages, of right controller joystick.
-     *
+     * <p>
      * The same as method getZRotationPercentage() if controller type is Controller.Type.STICK.
      * The same as method getYRotationPercentage() if controller type is Controller.Type.GAMEPAD.
      *
+     * @return Int value (from 0 to 100) corresponding to right controller joystick on y coordinate.
      * @see joystick.JInputJoystick#getZRotationPercentage()
      * @see joystick.JInputJoystick#getYRotationPercentage()
-     *
-     * @return Int value (from 0 to 100) corresponding to right controller joystick on y coordinate.
      */
-    public int getY_RightJoystick_Percentage()
-    {
+    public int getY_RightJoystick_Percentage() {
         int yValueRightJoystickPercentage;
 
         // stick type controller
-        if(this.controller.getType() == Controller.Type.STICK)
-        {
+        if (this.controller.getType() == Controller.Type.STICK) {
             yValueRightJoystickPercentage = this.getZRotationPercentage();
         }
         // gamepad type controller
-        else
-        {
+        else {
             yValueRightJoystickPercentage = this.getYRotationPercentage();
         }
 

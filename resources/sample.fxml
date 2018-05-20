@@ -1,0 +1,30 @@
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.GridPane?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.TextFlow?>
+<?import com.sun.javafx.charts.Legend?>
+<?import javafx.scene.control.cell.TextFieldListCell?>
+<VBox fx:controller="taggert.GuiController" xmlns:fx="http://javafx.com/fxml" alignment="CENTER" spacing="5">
+    <padding>
+        <Insets top="10" right="10" bottom="10" left="10"/>
+    </padding>
+
+    <GridPane alignment="center" hgap="10" vgap="10">
+        <Label fx:id="left" text="" GridPane.columnIndex="0" GridPane.rowIndex="1"
+               GridPane.halignment="CENTER"/>
+        <Label fx:id="right" text="" GridPane.columnIndex="2" GridPane.rowIndex="1"
+               GridPane.halignment="CENTER"/>
+        <Label fx:id="up" text="" GridPane.columnIndex="1" GridPane.rowIndex="0"
+               GridPane.halignment="CENTER"/>
+        <Label fx:id="down" text="" GridPane.columnIndex="1" GridPane.rowIndex="2"
+               GridPane.halignment="CENTER"/>
+    </GridPane>
+    <TextArea fx:id="textArea" mouseTransparent="true" focusTraversable="false"/>
+    <TextField fx:id="input"/>
+    <Button fx:id="submit" text="Ok"/>
+</VBox>

@@ -1,0 +1,39 @@
+.label {
+    -fx-alignment: center;
+    -fx-background-color: radial-gradient(center 50% 50%, radius 50%, green 50%, darkgreen, black);
+    -fx-background-radius: 50;
+    -fx-border-color: linear-gradient(red, white, red);
+    -fx-border-radius: 50;
+    -fx-border-width: 2;
+    -fx-pref-width: 50;
+    -fx-pref-height: 50;
+    -fx-text-fill: red;
+    -fx-font-weight: bold;
+}
+
+.pressed {
+    -fx-background-color: radial-gradient(center 50% 50%, radius 50%, greenyellow 55%, green);
+}
+
+.text-field {
+    -fx-max-width: 50;
+}
+.text-area .scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.text-area .scroll-pane .viewport{
+    -fx-background-color: transparent;
+}
+
+
+.text-area .scroll-pane .content{
+    -fx-background-color: transparent;
+}
+.text-area {
+    -fx-background-image: url("/logoeng.png");
+    -fx-background-position: center center;
+    -fx-background-repeat: stretch;
+}
+
+
